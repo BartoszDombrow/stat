@@ -67,35 +67,52 @@ cat("Bias:", bias_jack, "\\nSE:", se_jack)
 ')
 }
 
-#' Szkielet: Permutacje dla PAR (Zależne, np. przed/po)
+#' Szkielet: Permutacje dla PAR (Zależne - Wersja z dwiema pętlami)
 #'
 #' @description
-#' Test permutacyjny dla dwóch pomiarów na tych samych obiektach.
-#' Losowanie znaków +/-.
+#' Test permutacyjny dla par (np. klasyczne vs nowe).
+#' Wersja zagnieżdżona (for w for), dokładnie jak na screenach z zajęć.
 #' @export
 kod_perm_pary <- function() {
   cat('
-# --- PERMUTACJE PARY ---
-x <- ... # Wektor 1
-y <- ... # Wektor 2
+# --- PERMUTACJE PARY (Wersja z dwiema pętlami) ---
+# 1. DANE
+x <- ... # np. klasyczne
+y <- ... # np. nowe
 diff <- x - y
 sumo <- sum(diff)
 n <- length(diff)
 
+# 2. PARAMETRY
 N <- 1000
 csgo <- 0
 stat <- numeric(n)
 
+# 3. SYMULACJA
 for(i in 1:N) {
-  # Losowanie znaków
-  stat <- ifelse(runif(n) < 0.5, diff, -diff)
 
-  # WAŻNE: Sprawdź znak! (<= jeśli sumo ujemne, >= jeśli dodatnie)
-  if(sum(stat) <= sumo) csgo <- csgo + 1
+  # Pętla wewnętrzna (losowanie znaku dla każdego elementu z osobna)
+  for(j in 1:n) {
+    if(runif(1) < 0.5) {
+      stat[j] <- diff[j]
+    } else {
+      stat[j] <- -diff[j]
+    }
+  }
+
+  # Sprawdzanie warunku (ZNAK ZALEŻY OD SUMO!)
+  # Jeśli sumo < 0, dajemy <=
+  # Jeśli sumo > 0, dajemy >=
+  if(sum(stat) <= sumo) {
+    csgo <- csgo + 1
+  }
 }
 
+# 4. WYNIK
 p_val <- 2 * csgo / N
-cat("P-value:", p_val)
+cat("Suma obserwowana (sumo):", sumo, "\\n")
+cat("Licznik (csgo):", csgo, "\\n")
+cat("P-value:", p_val, "\\n")
 ')
 }
 
@@ -127,29 +144,52 @@ cat("P-value:", p_val)
 ')
 }
 
-#' Szkielet: Bootstrap PARAMETRYCZNY
+#' Szkielet: Bootstrap PARAMETRYCZNY (Poisson, Wykładniczy, Normalny)
 #'
 #' @description
-#' Gdy znamy rozkład (Poisson, Wykładniczy, Normalny).
+#' Gdy znamy rozkład danych. Generuje kod z przykładami dla różnych rozkładów.
 #' @export
 kod_boot_param <- function() {
   cat('
 # --- BOOTSTRAP PARAMETRYCZNY ---
-x <- ...
+x <- ... # Wstaw dane
 n <- length(x)
-# Parametr (np. lambda = mean(x) dla Poissona)
-param <- mean(x)
 
+# 1. ESTYMACJA PARAMETRÓW (Wybierz właściwy)
+# --- Rozkład Poissona ---
+param <- mean(x) # lambda_hat
+
+# --- Rozkład Wykładniczy ---
+# rate_hat <- 1/mean(x)
+
+# --- Rozkład Normalny ---
+# mu_hat <- mean(x)
+# sd_hat <- sd(x)
+
+
+# 2. GENEROWANIE PRÓBEK (Wybierz właściwy r...)
 set.seed(123)
-B <- 5 # Ile próbek?
-# Generowanie (rpois / rexp / rnorm)
+B <- 5 # Liczba próbek z polecenia
+
+# Dla Poissona:
 boot_samples <- replicate(B, rpois(n, param))
 
-# Statystyka dla każdej próbki (np. median)
+# Dla Wykładniczego:
+# boot_samples <- replicate(B, rexp(n, rate_hat))
+
+# Dla Normalnego:
+# boot_samples <- replicate(B, rnorm(n, mu_hat, sd_hat))
+
+
+# 3. STATYSTYKA I WYNIKI
+# Liczymy statystykę dla każdej próbki (np. median, mean, var)
 boot_stats <- apply(boot_samples, 2, median)
 
+# Obciążenie (Bias) = (średnia z boot) - (statystyka z oryginału)
 bias <- mean(boot_stats) - median(x)
-print(bias)
+
+cat("Statystyki z próbek:", boot_stats, "\\n")
+cat("Obciążenie:", bias, "\\n")
 ')
 }
 
