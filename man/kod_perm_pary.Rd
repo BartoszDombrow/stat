@@ -2,11 +2,11 @@
 % Please edit documentation in R/gotowce.R
 \name{kod_perm_pary}
 \alias{kod_perm_pary}
-\title{Szkielet: Permutacje dla PAR (Zależne, np. przed/po)}
+\title{Szkielet: Permutacje dla PAR (Zależne - Wersja z dwiema pętlami)}
 \usage{
 kod_perm_pary()
 }
 \description{
-Test permutacyjny dla dwóch pomiarów na tych samych obiektach.
-Losowanie znaków +/-.
+Test permutacyjny dla par (np. klasyczne vs nowe).
+Wersja zagnieżdżona (for w for), dokładnie jak na screenach z zajęć.
 }

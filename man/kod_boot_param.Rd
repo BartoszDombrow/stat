@@ -2,10 +2,10 @@
 % Please edit documentation in R/gotowce.R
 \name{kod_boot_param}
 \alias{kod_boot_param}
-\title{Szkielet: Bootstrap PARAMETRYCZNY}
+\title{Szkielet: Bootstrap PARAMETRYCZNY (Poisson, Wykładniczy, Normalny)}
 \usage{
 kod_boot_param()
 }
 \description{
-Gdy znamy rozkład (Poisson, Wykładniczy, Normalny).
+Gdy znamy rozkład danych. Generuje kod z przykładami dla różnych rozkładów.
 }
